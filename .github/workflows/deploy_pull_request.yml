@@ -29,9 +29,9 @@ jobs:
           tags: glenndehaan/kubernetes-pr-testing:pr-${{ github.event.pull_request.number }}
 
       - name: Kubernetes Login
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
 
       - name: Install Helm Chart
         working-directory: _scripts/helm
