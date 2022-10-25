@@ -42,7 +42,7 @@ jobs:
             --create-namespace \
             --wait \
             --set image.tag=pr-${{ github.event.pull_request.number }} \
-            --set ingress.hosts[0].host=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl \
+            --set ingress.hosts[0].host=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl,ingress.hosts[0].paths[0].path=/,ingress.hosts[0].paths[0].pathType=Prefix \
             --set ingress.tls[0].secretName=kubernetes-pr-testing-${{ github.event.pull_request.number }}-kube-devone-nl-tls \
             --set ingress.tls[0].hosts[0]=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
 
