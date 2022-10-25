@@ -1,0 +1,51 @@
+name: 'Deploy Pull Request'
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  deploy-pr:
+    name: 'Deploy Pull Request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: glenndehaan/kubernetes-pr-testing:pr-${{ github.event.pull_request.number }}
+
+      - name: Kubernetes Login
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Install Helm Chart
+        working-directory: _scripts/helm
+        run: |
+          helm upgrade pr-${{ github.event.pull_request.number }} kubernetes-pr-testing \
+            --install \
+            --namespace kubernetes-pr-testing \
+            --create-namespace \
+            --wait
+
+      - name: Post comment to Pull Request
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: Your Pull Request Deployment is ready for review at https://kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
+          check_for_duplicate_msg: true

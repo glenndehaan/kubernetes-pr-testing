@@ -1,0 +1,19 @@
+name: 'Cleanup Pull Request'
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-pr:
+    name: 'Cleanup Pull Request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Kubernetes Login
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Delete Helm Chart
+        run: helm delete pr-${{ github.event.pull_request.number }} --namespace kubernetes-pr-testing
