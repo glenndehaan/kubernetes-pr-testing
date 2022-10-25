@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - name: Kubernetes Login
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
 
       - name: Delete Helm Chart
         run: helm delete pr-${{ github.event.pull_request.number }} --namespace kubernetes-pr-testing
