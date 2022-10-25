@@ -40,7 +40,11 @@ jobs:
             --install \
             --namespace kubernetes-pr-testing \
             --create-namespace \
-            --wait
+            --wait \
+            --set image.tag=pr-${{ github.event.pull_request.number }} \
+            --set ingress.hosts[0].host=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl \
+            --set ingress.tls[0].secretName=kubernetes-pr-testing-${{ github.event.pull_request.number }}-kube-devone-nl-tls \
+            --set ingress.tls[0].hosts[0]=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
 
       - name: Post comment to Pull Request
         uses: unsplash/comment-on-pr@master
