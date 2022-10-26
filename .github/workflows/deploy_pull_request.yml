@@ -47,9 +47,6 @@ jobs:
             --set ingress.tls[0].hosts[0]=kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
 
       - name: Post comment to Pull Request
-        uses: unsplash/comment-on-pr@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: thollander/actions-comment-pull-request@v1
         with:
-          msg: Your Pull Request Deployment is ready for review at https://kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
-          check_for_duplicate_msg: true
+          message: Your Pull Request Deployment is ready for review at https://kubernetes-pr-testing-${{ github.event.pull_request.number }}.kube.devone.nl
