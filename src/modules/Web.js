@@ -1,14 +1,14 @@
 /**
  * Import vendor packages
  */
-const os = require('os');
-const express = require('express');
+const os = require("os");
+const express = require("express");
 const app = express();
 
 /**
  * Check if we are using the dev version
  */
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.env.NODE_ENV !== "production";
 
 /**
  * Init the socket connection
@@ -17,23 +17,23 @@ const init = () => {
     /**
      * Trust proxy
      */
-    app.enable('trust proxy');
+    app.enable("trust proxy");
 
     /**
      * Disable powered by header for security reasons
      */
-    app.disable('x-powered-by');
+    app.disable("x-powered-by");
 
     /**
      * Implement a basic health check
      */
-    app.get('/_health', (req, res) => {
+    app.get("/_health", (req, res) => {
         res.json({
-            status: 'UP',
+            status: "UP",
             host: os.hostname(),
             load: process.cpuUsage(),
             mem: process.memoryUsage(),
-            uptime: process.uptime()
+            uptime: process.uptime(),
         });
     });
 
@@ -49,15 +49,16 @@ const init = () => {
     /**
      * Include GraphQL Playground
      */
-    app.get('/', (req, res) => {
-        res.send('Hello World!');
+    app.get("/", (req, res) => {
+        res.send("Hello World!");
     });
 
     /**
      * Start server on specific port
      */
-    app.listen(3000, '0.0.0.0');
-    console.log(`[WEB] Running on: 0.0.0.0:3000`);
+    app.listen(3000, "0.0.0.0", () => {
+        console.log("[WEB] Running on: 0.0.0.0:3000");
+    });
 };
 
-module.exports = {init};
+module.exports = { init };
