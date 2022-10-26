@@ -17,3 +17,9 @@ jobs:
 
       - name: Delete Helm Chart
         run: helm delete pr-${{ github.event.pull_request.number }} --namespace kubernetes-pr-testing
+
+      - name: Remove Docker Image
+        working-directory: _scripts/helm
+        run: |
+          TOKEN=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.DOCKERHUB_USERNAME }}", "password":"${{ secrets.DOCKERHUB_TOKEN }}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
+          curl -X DELETE -H "Authorization: JWT ${TOKEN}" "https://hub.docker.com/v2/repositories/glenndehaan/kubernetes-pr-testing/tags/pr-${{ github.event.pull_request.number }}/"
